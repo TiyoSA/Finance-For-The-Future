@@ -4,13 +4,6 @@ import { ref, computed, watch } from 'vue';
 import { useAuthStore } from './authStore';
 import axios from 'axios'; // <-- Import Axios
 
-const BACKEND_URL = 'https://832098e2-cc0b-4d89-bc77-ba2cc7313bb3-00-17dp92phnrqnl.pike.replit.dev/';
-
-// Buat instance Axios dengan base URL.
-const api = axios.create({
-  baseURL: BACKEND_URL,
-});
-
 export const useTransactionStore = defineStore('transactions', () => {
   const transactions = ref([]);
   const isLoading = ref(false);
@@ -21,6 +14,7 @@ export const useTransactionStore = defineStore('transactions', () => {
   const getHeaders = () => {
     return {
       'Content-Type': 'application/json',
+      // 'Authorization': `Bearer ${authStore.token}` // Tidak perlu ini untuk JSON Server
     };
   };
 
@@ -62,12 +56,12 @@ export const useTransactionStore = defineStore('transactions', () => {
           type,
           date: new Date().toISOString().slice(0, 10)
       };
-      const response = await api.post('/api/transactions', newTransactionData, {
+      const response = await axios.post('https://832098e2-cc0b-4d89-bc77-ba2cc7313bb3-00-17dp92phnrqnl.pike.replit.dev/transactions', newTransactionData, { // URL DIGANTI DI SINI
         headers: getHeaders()
       });
 
       const data = response.data;
-      transactions.value.unshift(data); 
+      transactions.value.unshift(data); // Tambahkan ke awal array
     } catch (err) {
       error.value = err.message || 'Gagal menambahkan transaksi.';
       console.error("Failed to add transaction:", err);
@@ -84,8 +78,8 @@ export const useTransactionStore = defineStore('transactions', () => {
     isLoading.value = true;
     error.value = null;
     try {
-      // Menggunakan instance 'api' dengan path relatif
-      await api.delete(`/api/transactions/${id}`, {
+      // Untuk DELETE, kita asumsikan JSON Server menghapusnya, dan filter di frontend
+      await axios.delete(`https://832098e2-cc0b-4d89-bc77-ba2cc7313bb3-00-17dp92phnrqnl.pike.replit.dev/transactions/${id}`, { // URL DIGANTI DI SINI
         headers: getHeaders()
       });
 
@@ -108,8 +102,7 @@ export const useTransactionStore = defineStore('transactions', () => {
     isLoading.value = true;
     error.value = null;
     try {
-      // Menggunakan instance 'api' dengan path relatif
-      const response = await api.get(`/api/transactions?userId=${authStore.user.id}`, {
+      const response = await axios.get(`https://832098e2-cc0b-4d89-bc77-ba2cc7313bb3-00-17dp92phnrqnl.pike.replit.dev/transactions?userId=${authStore.user.id}`, { // URL DIGANTI DI SINI
         headers: getHeaders()
       });
 
