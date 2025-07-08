@@ -4,6 +4,14 @@ import { ref, computed } from 'vue';
 import router from '@/router';
 import axios from 'axios'; // <-- Import Axios
 
+// Langsung gunakan URL Replit Anda di sini
+const BACKEND_URL = 'https://832098e2-cc0b-4d89-bc77-ba2cc7313bb3-00-17dp92phnrqnl.pike.replit.dev/';
+
+// Buat instance Axios dengan base URL.
+const api = axios.create({
+  baseURL: BACKEND_URL,
+});
+
 export const useAuthStore = defineStore('auth', () => {
   const token = ref(localStorage.getItem('token') || null);
   const user = ref(JSON.parse(localStorage.getItem('user')) || null);
@@ -17,7 +25,9 @@ export const useAuthStore = defineStore('auth', () => {
     authError.value = null;
     try {
       // JSON Server tidak memiliki logika autentikasi. Kita akan simulasi di frontend.
-      const response = await axios.get(`https://super-intriguing-grey.glitch.me/users?username=${username}`); // URL DIGANTI DI SINI
+      // Gunakan instance 'api'. baseURL sudah dikonfigurasi.
+      // Asumsi rute JSON Server diawali dengan '/api/' seperti tutorial sebelumnya.
+      const response = await api.get(`/api/users?username=${username}`);
       const foundUser = response.data[0]; // JSON Server mengembalikan array
 
       if (foundUser && foundUser.password === password) {
@@ -42,7 +52,7 @@ export const useAuthStore = defineStore('auth', () => {
     authError.value = null;
     try {
       // Cek apakah username sudah ada
-      const checkUserResponse = await axios.get(`https://super-intriguing-grey.glitch.me/users?username=${username}`); // URL DIGANTI DI SINI
+      const checkUserResponse = await api.get(`/api/users?username=${username}`);
       if (checkUserResponse.data.length > 0) {
         throw new Error('Username sudah terdaftar.');
       }
@@ -51,7 +61,7 @@ export const useAuthStore = defineStore('auth', () => {
       }
 
       // Buat user baru di JSON Server
-      const newUserResponse = await axios.post('https://super-intriguing-grey.glitch.me/users', { // URL DIGANTI DI SINI
+      const newUserResponse = await api.post('/api/users', {
         username,
         password // Password tidak di-hash, hanya untuk demo!
       });
