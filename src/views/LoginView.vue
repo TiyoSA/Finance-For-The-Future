@@ -4,7 +4,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { useRouter } from 'vue-router'; // Import useRouter
 
 const authStore = useAuthStore();
-const router = useRouter(); // Dapatkan instance router
+const router = useRouter();
 
 const username = ref('');
 const password = ref('');
@@ -14,7 +14,7 @@ const handleLogin = async () => {
 };
 
 const navigateToRegister = () => {
-    router.push('/register'); // <-- Arahkan ke rute /register
+    router.push('/register');
 }
 </script>
 
@@ -40,7 +40,7 @@ const navigateToRegister = () => {
       <p class="register-link">
         Belum punya akun? <a href="#" @click.prevent="navigateToRegister">Daftar di sini</a>
       </p>
-      <p class="demo-info">Gunakan **user: user** dan **password: password** untuk demo.</p>
+      <p class="demo-info">Gunakan **user: user dan **password: password untuk demo.</p>
     </div>
   </div>
 </template>
