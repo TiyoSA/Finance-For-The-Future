@@ -25,9 +25,9 @@ export const useAuthStore = defineStore('auth', () => {
     authError.value = null;
     try {
       // JSON Server tidak memiliki logika autentikasi. Kita akan simulasi di frontend.
-      // Gunakan instance 'api'. baseURL sudah dikonfigurasi.
-      // Asumsi rute JSON Server diawali dengan '/api/' seperti tutorial sebelumnya.
-      const response = await api.get(`https://832098e2-cc0b-4d89-bc77-ba2cc7313bb3-00-17dp92phnrqnl.pike.replit.dev/?username=${username}`);
+      // GUNAKAN JALUR RELATIF SETELAH BASE_URL
+      // Endpoint untuk user di JSON Server adalah /api/users
+      const response = await api.get(`/api/users?username=${username}`);
       const foundUser = response.data[0]; // JSON Server mengembalikan array
 
       if (foundUser && foundUser.password === password) {
@@ -52,7 +52,8 @@ export const useAuthStore = defineStore('auth', () => {
     authError.value = null;
     try {
       // Cek apakah username sudah ada
-      const checkUserResponse = await api.get(`https://832098e2-cc0b-4d89-bc77-ba2cc7313bb3-00-17dp92phnrqnl.pike.replit.dev/?username=${username}`);
+      // GUNAKAN JALUR RELATIF SETELAH BASE_URL
+      const checkUserResponse = await api.get(`/api/users?username=${username}`);
       if (checkUserResponse.data.length > 0) {
         throw new Error('Username sudah terdaftar.');
       }
@@ -61,9 +62,10 @@ export const useAuthStore = defineStore('auth', () => {
       }
 
       // Buat user baru di JSON Server
-      const newUserResponse = await api.post('https://832098e2-cc0b-4d89-bc77-ba2cc7313bb3-00-17dp92phnrqnl.pike.replit.dev/', {
+      // GUNAKAN JALUR RELATIF SETELAH BASE_URL
+      const newUserResponse = await api.post('/api/users', {
         username,
-        password
+        password // Password tidak di-hash, hanya untuk demo!
       });
 
       const newUser = newUserResponse.data;
