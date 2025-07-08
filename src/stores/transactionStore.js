@@ -4,6 +4,14 @@ import { ref, computed, watch } from 'vue';
 import { useAuthStore } from './authStore';
 import axios from 'axios'; // <-- Import Axios
 
+// Langsung gunakan URL Replit Anda di sini
+const BACKEND_URL = 'https://832098e2-cc0b-4d89-bc77-ba2cc7313bb3-00-17dp92phnrqnl.pike.replit.dev/';
+
+// Buat instance Axios dengan base URL.
+const api = axios.create({
+  baseURL: BACKEND_URL,
+});
+
 export const useTransactionStore = defineStore('transactions', () => {
   const transactions = ref([]);
   const isLoading = ref(false);
@@ -50,13 +58,14 @@ export const useTransactionStore = defineStore('transactions', () => {
     try {
       const type = amount >= 0 ? 'income' : 'expense';
       const newTransactionData = {
-          userId: authStore.user.id, 
+          userId: authStore.user.id,
           description,
           amount,
           type,
           date: new Date().toISOString().slice(0, 10)
       };
-      const response = await axios.post('https://832098e2-cc0b-4d89-bc77-ba2cc7313bb3-00-17dp92phnrqnl.pike.replit.dev/transactions', newTransactionData, { // URL DIGANTI DI SINI
+      // Menggunakan instance 'api' dengan path relatif, termasuk '/api/'
+      const response = await api.post('/api/transactions', newTransactionData, {
         headers: getHeaders()
       });
 
@@ -78,10 +87,11 @@ export const useTransactionStore = defineStore('transactions', () => {
     isLoading.value = true;
     error.value = null;
     try {
-      await axios.delete(`https://832098e2-cc0b-4d89-bc77-ba2cc7313bb3-00-17dp92phnrqnl.pike.replit.dev/transactions/${id}`, { // URL DIGANTI DI SINI
+      // Menggunakan instance 'api' dengan path relatif, termasuk '/api/'
+      await api.delete(`/api/transactions/${id}`, {
         headers: getHeaders()
       });
-      
+
       transactions.value = transactions.value.filter(t => t.id !== id && t.userId === authStore.user.id);
     } catch (err) {
       error.value = err.message || 'Gagal menghapus transaksi.';
@@ -100,7 +110,8 @@ export const useTransactionStore = defineStore('transactions', () => {
     isLoading.value = true;
     error.value = null;
     try {
-      const response = await axios.get(`https://832098e2-cc0b-4d89-bc77-ba2cc7313bb3-00-17dp92phnrqnl.pike.replit.dev/transactions?userId=${authStore.user.id}`, { // URL DIGANTI DI SINI
+      // Menggunakan instance 'api' dengan path relatif, termasuk '/api/'
+      const response = await api.get(`/api/transactions?userId=${authStore.user.id}`, {
         headers: getHeaders()
       });
 
