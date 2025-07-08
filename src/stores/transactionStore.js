@@ -50,7 +50,7 @@ export const useTransactionStore = defineStore('transactions', () => {
     try {
       const type = amount >= 0 ? 'income' : 'expense';
       const newTransactionData = {
-          userId: authStore.user.id, // <-- Kirim userId bersama transaksi
+          userId: authStore.user.id, 
           description,
           amount,
           type,
@@ -78,12 +78,10 @@ export const useTransactionStore = defineStore('transactions', () => {
     isLoading.value = true;
     error.value = null;
     try {
-      // Untuk DELETE, kita asumsikan JSON Server menghapusnya, dan filter di frontend
       await axios.delete(`https://832098e2-cc0b-4d89-bc77-ba2cc7313bb3-00-17dp92phnrqnl.pike.replit.dev/transactions/${id}`, { // URL DIGANTI DI SINI
         headers: getHeaders()
       });
-
-      // Filter di frontend, juga pastikan userId cocok
+      
       transactions.value = transactions.value.filter(t => t.id !== id && t.userId === authStore.user.id);
     } catch (err) {
       error.value = err.message || 'Gagal menghapus transaksi.';
